@@ -24,9 +24,9 @@ deploy:
 	helm install crud-app ./crud-app
 
 create-cluster:
-           podman machine init --cpus 4 --memory 5000 --rootful # setup podman VMs
-           minikube start --driver=podman --container-runtime=cri-o  --addons=metrics-server --nodes=1 --memory=4096M --cpus=4 --kubernetes-version=v1.26.5 #Setup minikube
-           minikube image load crud-app-image.tar # install the crud-app image into the local container cache of all nodes of minikube cluster 
+        podman machine init --cpus 4 --memory 5000 --rootful # setup podman VMs
+        minikube start --driver=podman --container-runtime=cri-o  --addons=metrics-server --nodes=1 --memory=4096M --cpus=4 --kubernetes-version=v1.26.5 #Setup minikube
+        minikube image load crud-app-image.tar # install the crud-app image into the local container cache of all nodes of minikube cluster 
 	minikube images # Hack to not setup new registry and treat local filesystem as artifact registry # also optional image loads
 
 	cd k8s/1-observability-components
@@ -42,6 +42,6 @@ create-cluster:
 	helm install -n crud-app crud-app ./crud-app --debug
 
 teardown-cluster:
-           minikube delete
+        minikube delete
 	podman machine stop
 	podman machine rm
