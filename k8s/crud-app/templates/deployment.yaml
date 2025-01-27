@@ -1,0 +1,52 @@
+---
+# TODO: Add a new service file
+# TODO: Test the service endpoint
+# TODO: Add a new service monitor type that scrapes from the service endpoint
+# TODO: Finish the loki suggested configuration
+# TODO: Explore the container logs whatever is in kubectl logs, its should be coming there e.g. 10.244.1.1 - - [26/Jan/2025 12:48:13] "GET /items HTTP/1.1" 200 -
+# TODO: Alertmanager configs (optional)
+# TODO: Split the crud-app helm so that we can deploy and undeploy the crudapp without redeploying the kube and loki components into the 1-setup-required-components helm chart
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crud-app
+  labels:
+    app: crud-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: crud-app
+  template:
+    metadata:
+      labels:
+        app: crud-app
+    spec:
+      containers:
+      - name: crud-app
+        image: localhost/crud-app:latest  # Replace with your image repository/tag for cloud deployments
+        env:
+        # - name: OTEL_SERVICE_NAME
+        #   value: crud-app
+        # - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        #   value: <ENDPOINT>
+        # # - name: EXPORTER_OTLP_HEADERS
+        # #   value: "Authorization=<BASIC_AUTH_HEADER"
+        # - name: OTEL_TRACES_EXPORTER
+        #   value: otlp
+        # - name: OTEL_METRICS_EXPORTER
+        #   value: otlp
+        ports:
+        - containerPort: 5000
+        readinessProbe:
+          httpGet:
+            path: /items  # TODO: build a hc url
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /items # TODO: build a hc url
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 10
